@@ -1,65 +1,55 @@
 package com.imagepros.app;
 
 import android.app.Activity;
-import android.app.ActionBar;
-import android.app.Fragment;
+import android.hardware.Camera;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.os.Build;
+import android.util.Log;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
+
+import com.imagepros.app.camera.CustomCameraImpl;
+import com.imagepros.app.display.CustomPreviewImpl;
 
 public class ImagePros extends Activity {
 
+    private final String TAG = "CameraPros_MainActivity";
+
+    private Camera mCamera;
+    private CustomPreviewImpl mCameraPreview;
+    private final CustomCameraImpl mCustomCamera = new CustomCameraImpl();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        Log.i(TAG, "Has started! ");
+
         super.onCreate(savedInstanceState);
+
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_image_pros);
 
-        if (savedInstanceState == null) {
-            getFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
-                    .commit();
-        }
+
+        mCamera = mCustomCamera.getCameraInstance();
+        mCameraPreview = new CustomPreviewImpl(this, mCamera);
+
+        FrameLayout preview = (FrameLayout)findViewById(R.id.camera_preview);
+
+        preview.addView(mCameraPreview);
+
+        /*
+        Button captureButton = (Button)findViewById(R.id.button_capture);
+
+        captureButton.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mCamera.takePicture(null,null,mCustomCamera.getPictureCallback());
+                    }
+                }
+        );
+        */
     }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.image_pros, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle acction bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_image_pros, container, false);
-            return rootView;
-        }
-    }
-
 }

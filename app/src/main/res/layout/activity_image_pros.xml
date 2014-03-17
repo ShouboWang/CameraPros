@@ -3,15 +3,19 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.imagepros.app.ImagePros"
-    tools:ignore="MergeRootFrame"
-
-    >
-
-    <ImageView
-        android:layout_height="fill_parent"
+    tools:context="com.proj.MainActivity"
+    tools:ignore="MergeRootFrame">
+    <FrameLayout
         android:layout_width="fill_parent"
-        android:id="@+id/preview_wrapper"
-        />
-
-    </LinearLayout>
+        android:layout_height="fill_parent"
+        android:id="@+id/camera_preview"
+        android:layout_weight="1"/>
+    <!--
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/button_capture"
+        android:text="Capture"
+        android:layout_gravity="center"/>
+    -->
+</LinearLayout>
