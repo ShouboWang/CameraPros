@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import com.imagepros.app.camera.util.helper.HelperUtilImpl;
 /**
- * Created by shoubo.wang on 17/03/14.
+ * Created by shoubo.wang on 17/03/14. test
  */
 public class GaussianFilterImpl {
 
