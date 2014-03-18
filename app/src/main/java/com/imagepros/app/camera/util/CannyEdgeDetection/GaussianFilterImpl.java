@@ -1,75 +1,86 @@
 package com.imagepros.app.camera.util.CannyEdgeDetection;
 
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import com.imagepros.app.camera.util.helper.HelperUtilImpl;
-/**
- * Created by shoubo.wang on 17/03/14. test
- */
+
 public class GaussianFilterImpl {
 
-    private int maskSize;
-    private HelperUtilImpl helperUtil;
-
-    public Bitmap applyCannyEdgeDetection( Bitmap sourceImage ) {
-        Bitmap processedImage = applyGaussianBlur(sourceImage);
-
-        return processedImage;
+    public double[] get1DGaussianKernel( int deviation ) {
+        int size = deviation * 6 + 1;
+        return normalizeGaussianKernel(get1DGaussianKernel( size, deviation ));
     }
 
-    private Bitmap applyGaussianBlur( Bitmap sourceImage ) {
-        Bitmap processedImage = Bitmap.createBitmap( sourceImage.getWidth(), sourceImage.getHeight(), sourceImage.getConfig() );
+    //Creates the 1d Gaussian Mask
+    public double[] get1DGaussianKernel( int size, int deviation ) {
 
-        int[][] gaussianFilter = helperUtil.getGaussianFilter();
-        int gaussianFilterHalfValue = gaussianFilter.length / 2;
+        double[] mask = new double[size];
 
-        int partialValue = 0;
-        int totalValue = helperUtil.getGaussianFilterTotal(gaussianFilter);
+        int deviationSqr2 = 2 * deviation * deviation;
+        int half = size / 2;
+        double frontValue = 1.0 / ((Math.sqrt( 2 * Math.PI )) * deviation );
 
-        boolean useTotal = true;
+        for( int index = half * -1; index <= half; index++) {
+            mask[index + half] = frontValue * Math.exp(((-1.0) * (index) * (index))/deviationSqr2);
+        }
 
+        return mask;
+    }
 
-        int sourceImageHeight = sourceImage.getHeight();
-        int sourceImageWidth = sourceImage.getWidth();
+    public double[] normalizeGaussianKernel( double[] kernel ) {
 
-        for( int row = 0; row < sourceImageHeight; row ++ ) {
-            for( int col = 0; col < sourceImageWidth; col++ ) {
-                int pixAlpha = Color.alpha(sourceImage.getPixel(row, col));
-                int pixRed = 0;
-                int pixGreen = 0;
-                int pixBlue = 0;
+        double sum = 0.0;
 
-                for( int filterRow = (-1) * gaussianFilterHalfValue; filterRow < gaussianFilterHalfValue; filterRow++ ) {
-                    for( int filterCol = (-1) * gaussianFilterHalfValue; filterCol < gaussianFilterHalfValue; filterCol++ ) {
-                        int pixY = row + filterRow;
-                        int pixX = col + filterCol;
-                        if( pixX < 0 || pixY < 0 || pixX > sourceImageWidth || pixY > sourceImageHeight ) {
-                            useTotal = false;
-                            continue;
-                        }
-                        if( !useTotal ) {
-                            partialValue += gaussianFilter[row + gaussianFilterHalfValue][col + gaussianFilterHalfValue];
-                        }
+        for( int index = 0; index < kernel.length; index++ ) {
+            sum += kernel[index];
+        }
 
-                        int sourcePix = sourceImage.getPixel(pixX, pixY);
-                        pixRed += Color.red(sourcePix);
-                        pixGreen += Color.green(sourcePix);
-                        pixBlue += Color.blue(sourcePix);
-                    }
-                }
+        if(sum != 0.0) {
+            for( int index = 0; index < kernel.length; index++ ) {
+                kernel[index] /= sum;
+            }
+        }
+        return kernel;
+    }
 
-                if( useTotal ) {
-                    partialValue = totalValue;
-                }
+    public double[][] gaussianConvolution(double[][] matrix, int deviation) {
+        double[] kernel = get1DGaussianKernel( deviation );
 
-                pixBlue /= partialValue;
-                pixGreen /= partialValue;
-                pixRed /= partialValue;
+        double[][] ret1 = new double[matrix[0].length][matrix[1].length];
+        double[][] ret2 = new double[matrix[0].length][matrix[1].length];
 
-                processedImage.setPixel(row, col, Color.argb(pixAlpha, pixRed, pixGreen, pixBlue));
+        //x direction
+        for (int row = 0; row < matrix[0].length; row++ ) {
+            for (int col = 0; col < matrix[1].length; col++ ) {
+                ret1[row][col] = processPoint(matrix, row, col, kernel, 0);
             }
         }
 
-        return processedImage;
+        //y direction
+        for (int row = 0; row < matrix[0].length; row++ ) {
+            for (int col = 0; col < matrix[1].length; col++ ) {
+                ret2[row][col] = processPoint(ret1, row, col, kernel, 1);
+            }
+        }
+
+        return null;
+    }
+
+    private double processPoint(double[][] matrix, int row, int col, double[] kernel, int direction) {
+        double res = 0;
+
+        int half = kernel.length / 2;
+
+        for( int i = (-1) * half; i <= half; i++ ) {
+            int cox = row;
+            int coy = col;
+            if ( 0 == direction ) {
+                cox += i;
+            } else {
+                coy += i;
+            }
+
+            if ( cox >= 0 && coy >= 0 && cox < matrix.length && coy <=matrix[0].length ) {
+                res += matrix[cox][coy] * kernel[i + half];
+            }
+        }
+        return res;
     }
 }
