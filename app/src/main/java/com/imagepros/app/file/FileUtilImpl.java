@@ -15,7 +15,8 @@ public class FileUtilImpl {
     private final String TAG = "CameraPros_CameraFileUtilImpl";
 
     /// Creates the file with destination folder
-    public File getOutputMediaFile(int type) {
+    //org File
+    public String getOutputMediaFile(int type) {
         File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES), "MyCameraApp");
 
@@ -34,6 +35,8 @@ public class FileUtilImpl {
 
         Log.i(TAG, "File location: " + mediaStorageDir.getPath() + File.separator + "IMG_" + timeStamp + ".jpg");
 
-        return mediaFile;
+        return mediaStorageDir.getPath() + File.separator + "IMG_" + timeStamp + ".jpg";
+
+        //return mediaFile;
     }
 }

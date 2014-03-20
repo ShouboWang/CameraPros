@@ -53,7 +53,8 @@ public class CustomCameraImpl {
 
             FileUtilImpl cameraFileUtil = new FileUtilImpl();
 
-            File pictureFile = cameraFileUtil.getOutputMediaFile(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE);
+            File pictureFile = null;
+            //cameraFileUtil.getOutputMediaFile(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE);
 
             if(pictureFile == null) {
                 return;
