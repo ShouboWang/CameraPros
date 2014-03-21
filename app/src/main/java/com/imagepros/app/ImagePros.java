@@ -45,7 +45,7 @@ public class ImagePros extends Activity {
         cannyEdgeDetection = new CannyEdgeDetectionImpl();
 
         long start = System.currentTimeMillis();
-        Bitmap imageProcessed = cannyEdgeDetection.applyCannyEdgeDetection(image, 7, 5);
+        Bitmap imageProcessed = cannyEdgeDetection.applyCannyEdgeDetection(image, 11, 5);
         long milli = System.currentTimeMillis() - start;
         Log.i(TAG,( milli)+"");
 

@@ -2,6 +2,7 @@ package com.imagepros.app.camera.util;
 
 import android.graphics.Bitmap;
 import com.imagepros.app.camera.util.Filters.GaussianFilterImpl;
+import com.imagepros.app.camera.util.Filters.SobelOperatorImpl;
 import com.imagepros.app.camera.util.helper.HelperUtilImpl;
 
 /**
@@ -33,8 +34,13 @@ public class CannyEdgeDetectionImpl {
         gaussianFilter = new GaussianFilterImpl();
         afterEffectArray = gaussianFilter.gaussianConvolution(srcImgArray, width, gaussianKernelSize, gaussianKernelSigma);
 
+        // Apply Sobel filter
+        SobelOperatorImpl sobelOperator = new SobelOperatorImpl();
+        afterEffectArray = sobelOperator.applySobelOperator(afterEffectArray, width);
+
         // Convert int array to Bitmap
         Bitmap afterEffectBitmap = Bitmap.createBitmap(afterEffectArray, 0, width, width, height, srcImg.getConfig());
+        //afterEffectBitmap = helperUtil.toGrayscale(afterEffectBitmap);
         return afterEffectBitmap;
 
     }

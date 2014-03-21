@@ -12,9 +12,6 @@ import com.imagepros.app.file.FileUtilImpl;
 import java.io.File;
 import java.io.FileOutputStream;
 
-/**
- * Created by Jack on 3/8/14.
- */
 public class CustomCameraImpl {
 
     private final String TAG = "CustomCamera Class";
@@ -28,7 +25,6 @@ public class CustomCameraImpl {
         }
     }
 
-    /** Get an instance of the Camera **/
     /**Gets the back facing camera**/
     public Camera getCameraInstance() {
         Camera camera = null;
