@@ -8,24 +8,21 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.imagepros.app.camera.CustomCameraImpl;
-import com.imagepros.app.camera.util.CannyEdgeDetection.GaussianFilterImpl;
-import com.imagepros.app.camera.util.helper.HelperUtilImpl;
+import com.imagepros.app.camera.util.CannyEdgeDetectionImpl;
 import com.imagepros.app.display.CustomPreviewImpl;
-import com.imagepros.app.file.FileUtilImpl;
-
-import java.io.FileOutputStream;
 
 public class ImagePros extends Activity {
 
-    private final String TAG = "CameraPros_MainActivity";
+    private final String TAG = "CameraPros_ImagePros";
 
     private Camera mCamera;
     private CustomPreviewImpl mCameraPreview;
     private final CustomCameraImpl mCustomCamera = new CustomCameraImpl();
+
+    private CannyEdgeDetectionImpl cannyEdgeDetection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,38 +38,19 @@ public class ImagePros extends Activity {
         setContentView(R.layout.activity_image_pros);
 
 
-        Bitmap image = BitmapFactory.decodeResource(getResources(), R.drawable.testimag2);
-
-
-        Log.i(TAG, (image == null) +" Testss" );
-
-        GaussianFilterImpl gi = new GaussianFilterImpl();
-        HelperUtilImpl helper = new HelperUtilImpl();
-        image = helper.toGrayscale(image);
+        Bitmap image = BitmapFactory.decodeResource(getResources(), R.drawable.testimage);
 
         ImageView view = (ImageView)findViewById(R.id.camera_preview);
 
+        cannyEdgeDetection = new CannyEdgeDetectionImpl();
+
         long start = System.currentTimeMillis();
-        //Bitmap image2 = gi.applyGaussianBlur(image);
-        Bitmap image2 = gi.gaussianConvolution(image, 3 ,1);
+        Bitmap imageProcessed = cannyEdgeDetection.applyCannyEdgeDetection(image, 7, 5);
         long milli = System.currentTimeMillis() - start;
-        Log.i(TAG,( milli/1000)+"");
+        Log.i(TAG,( milli)+"");
 
+        view.setImageBitmap(imageProcessed); //new img
 
-        long milliend = milli + 3000;
-        //image = gi.applyGaussianBlur(image);
-
-        //view.setImageBitmap(image); //org img
-
-        while(System.currentTimeMillis() < milliend)
-        {
-
-        }
-
-
-        view.setImageBitmap(image2); //new img
-
-        Log.i(TAG,"newimg");
 
         //mCamera = mCustomCamera.getCameraInstance();
         //mCameraPreview = new CustomPreviewImpl(this, mCamera);
@@ -93,16 +71,5 @@ public class ImagePros extends Activity {
                 }
         );
         */
-        FileUtilImpl fi = new FileUtilImpl();
-        String path = fi.getOutputMediaFile(1);
-        FileOutputStream out;
-        try {
-            out = new FileOutputStream(path);
-            image2.compress(Bitmap.CompressFormat.JPEG, 100, out);
-            out.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }
