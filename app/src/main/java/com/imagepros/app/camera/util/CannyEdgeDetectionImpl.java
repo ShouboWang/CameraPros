@@ -1,6 +1,8 @@
 package com.imagepros.app.camera.util;
 
 import android.graphics.Bitmap;
+import android.util.Log;
+
 import com.imagepros.app.camera.util.Filters.GaussianFilterImpl;
 import com.imagepros.app.camera.util.Filters.NonMaxSuppressionImpl;
 import com.imagepros.app.camera.util.Filters.SobelOperatorImpl;
@@ -45,7 +47,7 @@ public class CannyEdgeDetectionImpl {
 
         // Apply Non-Maximum Suppression
         NonMaxSuppressionImpl nonMaxSuppression = new NonMaxSuppressionImpl();
-        //afterEffectArray = nonMaxSuppression.applyNonMaxSuppression(afterEffectArray, thetaArr, width);
+        afterEffectArray = nonMaxSuppression.applyNonMaxSuppression(afterEffectArray, thetaArr, width);
 
         // Convert int array to Bitmap
         Bitmap afterEffectBitmap = Bitmap.createBitmap(afterEffectArray, 0, width, width, height, srcImg.getConfig());

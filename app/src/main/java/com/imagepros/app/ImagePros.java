@@ -3,8 +3,6 @@ package com.imagepros.app;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Environment;
@@ -44,30 +42,34 @@ public class ImagePros extends Activity {
 
 
         BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inSampleSize = 2;
+        options.inSampleSize = 1;  // >1 to return smaller image to save memory
+        options.inScaled = false;
 
         File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES), "MyCameraApp");
 
 
 
-
-        String path = mediaStorageDir.getPath() + File.separator + "testimg4.jpg";
+        String path = mediaStorageDir.getPath() + File.separator + "circle.jpg";
         Bitmap image = BitmapFactory.decodeFile(path, options);
 
         //Drawable drawable = getResources().getDrawable(R.drawable.testimg4);
         //Bitmap image = ((BitmapDrawable) drawable).getBitmap();
-        //Bitmap image = BitmapFactory.decodeResource(getResources(), R.drawable.testimg4);
+        //Bitmap image = BitmapFactory.decodeResource(getResources(), R.drawable.circle);
 
         ImageView view = (ImageView)findViewById(R.id.camera_preview);
+        Bitmap imageProcessed = null;
 
         cannyEdgeDetection = new CannyEdgeDetectionImpl();
 
-        long start = System.currentTimeMillis();
-        Bitmap imageProcessed = cannyEdgeDetection.applyCannyEdgeDetection(image, 5, 1);
-        long milli = System.currentTimeMillis() - start;
-        Log.i(TAG,( milli)+"");
+        for(int i = 0; i < 1; i++) {
 
+            long start = System.currentTimeMillis();
+            imageProcessed = cannyEdgeDetection.applyCannyEdgeDetection(image, 5, 1);
+            long milli = System.currentTimeMillis() - start;
+            Log.i(TAG,( milli)+"");
+
+        }
         view.setImageBitmap(imageProcessed); //new img
 
 
