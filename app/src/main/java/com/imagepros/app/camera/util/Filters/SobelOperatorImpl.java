@@ -1,5 +1,6 @@
 package com.imagepros.app.camera.util.Filters;
 
+
 import android.util.Log;
 
 public class SobelOperatorImpl {
@@ -8,12 +9,20 @@ public class SobelOperatorImpl {
     private final int greenMask = 0xFF00;
     private final int blueMask = 0xFF0000;
 
+    private char[] thetaArr;
+
     private final String TAG = "CameraPros_SobelOperatorImpl";
+
+    public char[] getThetaArray() {
+        return thetaArr;
+    }
 
     public int[] applySobelOperator(int[] srcImage, int srcImageWidth) {
 
         int srcImageLength = srcImage.length;
+
         int[] afterFilterImage = new int[srcImageLength];
+        thetaArr = new char[srcImageLength];
 
         for(int index = 1; index < srcImageLength - 1; index++) {
             afterFilterImage[index] = sobelOperator(srcImage, index, srcImageWidth, srcImageLength);
@@ -42,9 +51,46 @@ public class SobelOperatorImpl {
         int p8 = srcImage[ botRow ];
         int p9 = srcImage[ botRow + 1 ];
 
-        retInt = (p1 + 2*p2 + p3) - (p7 + 2*p8 + p9) + (p3 + 2*p6 + p9) - (p1 - 2*p4 + p7);
+        int Gx = Math.abs(p1-p7 + 2*p2-2*p8 + p3-p9);
+        int Gy = Math.abs(p3-p1 + 2*p6-2*p4 + p9-p7);
 
-        return Math.abs(retInt);
+
+        calcArcTan(Gx, Gy, x);
+
+
+        retInt = Gx + Gy;
+
+        int retIntRed = (retInt >> 16) & 0xFF;
+        int retIntGreen = (retInt >> 8) & 0xFF;
+        int retIntBlue = (retInt) & 0xFF;
+
+        if(retIntRed + retIntBlue + retIntGreen < 400) { //382
+            return 0;
+        }
+
+        return 16777215;
+
     }
+
+    private void calcArcTan(int Gx, int Gy, int index) {
+
+        float theta;
+
+        if(Gx == 0) {
+            thetaArr[index] = 0;
+        } else {
+            theta = (float) Math.atan(Gy/(float)Gx);
+            if(theta > 1.047197551) {
+                thetaArr[index] = 0;
+            } else if (theta > 0.52359877559) {
+                thetaArr[index] = 45;
+            } else {
+                thetaArr[index] = 90;
+            }
+        }
+    }
+
+
+
 
 }

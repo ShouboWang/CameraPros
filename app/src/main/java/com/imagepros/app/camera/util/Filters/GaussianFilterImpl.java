@@ -1,18 +1,12 @@
 package com.imagepros.app.camera.util.Filters;
 
-import android.util.Log;
-
 public class GaussianFilterImpl {
 
     private final int redMask = 0xFF;
     private final int greenMask = 0xFF00;
     private final int blueMask = 0xFF0000;
-    private final String TAG = "CameraPros_GaussianFilterImpl";
-
 
     public int[] gaussianConvolution(int[] srcImgArr, int srcImgWidth, int size ,int deviation) {
-
-        Log.d(TAG, "gaussianConvolution has started");
 
         int srcImgLength = srcImgArr.length;
 
@@ -31,8 +25,6 @@ public class GaussianFilterImpl {
         for( int index = kernel.length/2; index < srcImgLength - kernel.length/2; index++ ) {
             resultArr2[index] = processPointY(resultArr1, index, srcImgWidth, kernel);
         }
-
-        Log.d(TAG, "gaussianConvolution has finished");
 
         return resultArr2;
     }
@@ -59,8 +51,8 @@ public class GaussianFilterImpl {
 
         float sum = 0.0f;
 
-        for( int index = 0; index < kernel.length; index++ ) {
-            sum += kernel[index];
+        for( float kernelValue : kernel) {
+            sum += kernelValue;
         }
 
         if(sum != 0.0) {
@@ -112,7 +104,7 @@ public class GaussianFilterImpl {
 
         float kernelValue;
         int colorValue;
-        int colorValueIndex = 0;
+        int colorValueIndex;
 
         for( int i = (-1) * half; i <= half; i++ ) {
 
