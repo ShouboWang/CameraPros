@@ -26,15 +26,23 @@ public class CannyEdgeDetectionImpl {
         // Basic setup of array and variable from source image
         int width = srcImg.getWidth();
         int height = srcImg.getHeight();
-        int[] srcImgArray = new int[width * height];
         int[] afterEffectArray = new int[width * height];;
+
+
+
+        // Convert bitmap to int array
+        srcImg.getPixels(afterEffectArray, 0, width, 0, 0, width, height);
 
         // Apply gray filter
         helperUtil = new HelperUtilImpl();
         srcImg = helperUtil.toGrayscale(srcImg);
 
-        // Convert bitmap to int array
-        srcImg.getPixels(afterEffectArray, 0, width, 0, 0, width, height);
+
+        // Apply gray filter
+        //helperUtil = new HelperUtilImpl();
+        //afterEffectArray = helperUtil.getGrayScale(afterEffectArray);
+
+        //afterEffectArray = helperUtil.getRGBFromGrayScale(afterEffectArray);
 
         // Apply Gaussian filter
         gaussianFilter = new GaussianFilterImpl();
@@ -47,7 +55,8 @@ public class CannyEdgeDetectionImpl {
 
         // Apply Non-Maximum Suppression
         NonMaxSuppressionImpl nonMaxSuppression = new NonMaxSuppressionImpl();
-        afterEffectArray = nonMaxSuppression.applyNonMaxSuppression(afterEffectArray, thetaArr, width);
+        //afterEffectArray = nonMaxSuppression.applyNonMaxSuppression(afterEffectArray, thetaArr, width);
+
 
         // Convert int array to Bitmap
         Bitmap afterEffectBitmap = Bitmap.createBitmap(afterEffectArray, 0, width, width, height, srcImg.getConfig());
