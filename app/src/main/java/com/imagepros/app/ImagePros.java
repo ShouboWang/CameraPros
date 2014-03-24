@@ -50,8 +50,12 @@ public class ImagePros extends Activity {
 
 
 
-        String path = mediaStorageDir.getPath() + File.separator + "circle.jpg";
+        String path = mediaStorageDir.getPath() + File.separator + "square.jpg";
         Bitmap image = BitmapFactory.decodeFile(path, options);
+
+        if(image == null) {
+            Log.e(TAG, "IMAGE NOT FOUND");
+        }
 
         //Drawable drawable = getResources().getDrawable(R.drawable.testimg4);
         //Bitmap image = ((BitmapDrawable) drawable).getBitmap();
@@ -65,7 +69,7 @@ public class ImagePros extends Activity {
         for(int i = 0; i < 1; i++) {
 
             long start = System.currentTimeMillis();
-            imageProcessed = cannyEdgeDetection.applyCannyEdgeDetection(image, 5, 1);
+            imageProcessed = cannyEdgeDetection.applyCannyEdgeDetection(image, 1, 1);
             long milli = System.currentTimeMillis() - start;
             Log.i(TAG,( milli)+"");
 

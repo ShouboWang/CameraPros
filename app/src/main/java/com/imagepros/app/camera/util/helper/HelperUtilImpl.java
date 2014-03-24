@@ -10,26 +10,11 @@ import android.graphics.Paint;
  * Created by shoubo.wang on 17/03/14.
  */
 public class HelperUtilImpl {
-    public int getGaussianFilterTotal(int[][] gaussianFilter)
-    {
-        int totalvalue = 0;
 
-        for(int row = 0; row < gaussianFilter.length; row++)
-        {
-            for(int col = 0; col < gaussianFilter[row].length; col++)
-            {
-                totalvalue += gaussianFilter[row][col];
-            }
-        }
+    private int[] imgRed;
+    private int[] imgGreen;
+    private int[] imgBlue;
 
-        return totalvalue;
-    }
-
-    public int[][] getGaussianFilter()
-    {
-        int[][] gaussianFilter = new int[][]{{2,4,5,4,2},{4,9,12,9,4},{5,12,15,12,5},{4,9,12,9,4},{2,4,5,4,2}};
-        return gaussianFilter;
-    }
 
     public Bitmap toGrayscale(Bitmap bmpOriginal)
     {
@@ -46,5 +31,38 @@ public class HelperUtilImpl {
         paint.setColorFilter(f);
         c.drawBitmap(bmpOriginal, 0, 0, paint);
         return bmpGrayscale;
+    }
+
+    public int[] toGrayScale(int[] srcImage) {
+
+        int srcImageLength = srcImage.length;
+        int[] afterEffectArray = new int[srcImageLength];
+
+        getRGBFromImage(srcImage);
+
+        for(int index = 0; index < srcImageLength; index++) {
+            afterEffectArray[index] = (int)(imgRed[index]*0.2989 + imgBlue[index]*0.5870 + imgGreen[index]*0.1140 + 0.5);
+        }
+
+        return afterEffectArray;
+    }
+
+    public void getRGBFromImage(int[] srcImage) {
+
+        int srcImageLength = srcImage.length;
+        int srcImagePixel;
+
+        imgRed = new int[srcImageLength];
+        imgGreen = new int[srcImageLength];
+        imgBlue = new int[srcImageLength];
+
+
+        for(int index = 0; index < srcImageLength; index++) {
+            srcImagePixel = srcImage[index];
+            imgRed[index] = ( srcImagePixel >> 16 ) & 0xFF;
+            imgGreen[index] = ( srcImagePixel >> 8 ) & 0xFF;
+            imgBlue[index] = ( srcImagePixel ) & 0xFF;
+        }
+
     }
 }

@@ -1,10 +1,14 @@
 package com.imagepros.app.camera.util.Filters;
 
+import android.util.Log;
+
 public class GaussianFilterImpl {
 
     private final int redMask = 0xFF;
     private final int greenMask = 0xFF00;
     private final int blueMask = 0xFF0000;
+
+    String TAG = "Test:";
 
     public int[] gaussianConvolution(int[] srcImgArr, int srcImgWidth, int size ,int deviation) {
 
@@ -18,12 +22,12 @@ public class GaussianFilterImpl {
 
         // Process X direction
         for( int index = kernel.length/2; index < srcImgLength - kernel.length/2; index++ ) {
-            resultArr1[index] = processPointX(srcImgArr, index, kernel);
+            resultArr1[index] = processPointX2(srcImgArr, index, kernel);
         }
 
         // Get Y direction
         for( int index = kernel.length/2; index < srcImgLength - kernel.length/2; index++ ) {
-            resultArr2[index] = processPointY(resultArr1, index, srcImgWidth, kernel);
+            resultArr2[index] = processPointY2(resultArr1, index, srcImgWidth, kernel);
         }
 
         return resultArr2;
@@ -125,6 +129,59 @@ public class GaussianFilterImpl {
         }
 
         return colorRed + (colorGreen << 8) + (colorBlue << 16);
+    }
+
+    // Process the array in the X direction
+    // Gets the color value via byte shifting
+    // Returns the processed int value
+    private int processPointX2(int[] srcImg, int x, float[] kernel) {
+
+        final int half = kernel.length / 2;
+
+        float kernelValue;
+        int colorValue;
+        double processedColor = 0;
+
+        for( int i = (-1) * half; i <= half; i++ ) {
+
+            kernelValue = kernel[i + half];
+            colorValue = srcImg[i + x];
+
+            processedColor += colorValue * kernelValue;
+        }
+        return (int)(processedColor + 0.5);
+    }
+
+    // Process the array in the Y direction
+    // Gets the color value via byte shifting
+    // Returns the processed int value
+    private int processPointY2(int[] srcImg, int x, int width ,float[] kernel) {
+
+        final int half = kernel.length / 2;
+        final int srcImgLength = srcImg.length;
+
+        float kernelValue;
+        int colorValue;
+        int colorValueIndex;
+        double processedColor = 0;
+
+        for( int i = (-1) * half; i <= half; i++ ) {
+
+            colorValueIndex = x + i * width;
+            kernelValue = kernel[i + half];
+
+            // Check for out of bound
+            if(colorValueIndex < 0 || colorValueIndex >= srcImgLength) {
+                processedColor += srcImg[x] * kernelValue;
+                continue;
+            }
+
+            colorValue = srcImg[colorValueIndex];
+
+            processedColor += colorValue * kernelValue;
+
+        }
+        return (int)(processedColor + 0.5);
     }
 
 }

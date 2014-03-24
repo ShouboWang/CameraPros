@@ -28,7 +28,7 @@ public class SobelOperatorImpl {
         thetaArr = new char[srcImageLength];
 
         for(int index = 1; index < srcImageLength - 1; index++) {
-            afterFilterImage[index] = sobelOperator(srcImage, index, srcImageWidth, srcImageLength);
+            afterFilterImage[index] = sobelOperator2(srcImage, index, srcImageWidth, srcImageLength);
         }
 
         return afterFilterImage;
@@ -107,6 +107,40 @@ public class SobelOperatorImpl {
         return retInt;
     }
 
+
+    private int sobelOperator2(int[] srcImage, int x, int srcImageWidth, int srcImageLength) {
+        int retInt;
+
+        int topRow = x - srcImageWidth;
+        int botRow = x + srcImageWidth;
+
+        if(topRow - 1 < 0 || botRow + 1 >= srcImageLength) {
+            return srcImage[x];
+        }
+
+        int p1 = srcImage[ topRow - 1 ];
+        int p2 = srcImage[ topRow ];
+        int p3 = srcImage[ topRow + 1 ];
+        int p4 = srcImage[ x - 1 ];
+        int p6 = srcImage[ x + 1 ];
+        int p7 = srcImage[ botRow - 1 ];
+        int p8 = srcImage[ botRow ];
+        int p9 = srcImage[ botRow + 1 ];
+
+
+        int Gx = Math.abs(p1-p7) + Math.abs(2*p2-2*p8) + Math.abs(p3-p9);
+        int Gy = Math.abs(p3-p1) + Math.abs(2*p6-2*p4) + Math.abs(p9-p7);
+
+        calcArcTan(Gx, Gy, x);
+
+        retInt = Gx + Gy;
+
+        if(retInt > 255) {
+            return 255;
+        }
+
+        return retInt;
+    }
 
     private void calcArcTan(int Gx, int Gy, int index) {
 

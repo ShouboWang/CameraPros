@@ -19,30 +19,23 @@ public class CannyEdgeDetectionImpl {
     private HelperUtilImpl helperUtil;
 
     public Bitmap applyCannyEdgeDetection(Bitmap srcImg, int gaussianKernelSize, int gaussianKernelSigma) {
-
+        Log.d(TAG, "in1");
         if(srcImg == null) {
             return srcImg;
         }
+
+        Log.d(TAG, "in");
         // Basic setup of array and variable from source image
         int width = srcImg.getWidth();
         int height = srcImg.getHeight();
         int[] afterEffectArray = new int[width * height];;
-
-
 
         // Convert bitmap to int array
         srcImg.getPixels(afterEffectArray, 0, width, 0, 0, width, height);
 
         // Apply gray filter
         helperUtil = new HelperUtilImpl();
-        srcImg = helperUtil.toGrayscale(srcImg);
-
-
-        // Apply gray filter
-        //helperUtil = new HelperUtilImpl();
-        //afterEffectArray = helperUtil.getGrayScale(afterEffectArray);
-
-        //afterEffectArray = helperUtil.getRGBFromGrayScale(afterEffectArray);
+        afterEffectArray = helperUtil.toGrayScale(afterEffectArray);
 
         // Apply Gaussian filter
         gaussianFilter = new GaussianFilterImpl();
@@ -51,8 +44,9 @@ public class CannyEdgeDetectionImpl {
         // Apply Sobel filter
         SobelOperatorImpl sobelOperator = new SobelOperatorImpl();
         afterEffectArray = sobelOperator.applySobelOperator(afterEffectArray, width);
+        //printLog(afterEffectArray, width);
         char[] thetaArr = sobelOperator.getThetaArray();
-
+        printLog(thetaArr, width);
         // Apply Non-Maximum Suppression
         NonMaxSuppressionImpl nonMaxSuppression = new NonMaxSuppressionImpl();
         //afterEffectArray = nonMaxSuppression.applyNonMaxSuppression(afterEffectArray, thetaArr, width);
@@ -63,5 +57,44 @@ public class CannyEdgeDetectionImpl {
         return afterEffectBitmap;
 
     }
+
+    private void printLog(int[] img, int width) {
+        String temp = "";
+        String val;
+        for(int i = 0; i < img.length; i++) {
+            if(i % width == 0) {
+                Log.d(TAG, temp);
+                temp = "";
+            }
+
+            val = img[i] + "";
+            if(val.length() == 2) {
+                val = val + " ";
+            } else if (val.length() == 1) {
+                val = val + "  ";
+            }
+            temp += val + " ";
+        }
+    }
+
+    private void printLog(char[] img, int width) {
+        String temp = "";
+        String val;
+        for(int i = 0; i < img.length; i++) {
+            if(i % width == 0) {
+                Log.d(TAG, temp);
+                temp = "";
+            }
+
+            val = (int)(img[i]) + "";
+            if(val.length() == 2) {
+                val = val + " ";
+            } else if (val.length() == 1) {
+                val = val + "  ";
+            }
+            temp += val + " ";
+        }
+    }
+
 
 }
