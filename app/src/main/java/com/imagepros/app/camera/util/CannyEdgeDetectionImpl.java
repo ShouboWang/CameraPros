@@ -19,12 +19,12 @@ public class CannyEdgeDetectionImpl {
     private HelperUtilImpl helperUtil;
 
     public Bitmap applyCannyEdgeDetection(Bitmap srcImg, int gaussianKernelSize, int gaussianKernelSigma) {
+
         Log.d(TAG, "in1");
         if(srcImg == null) {
             return srcImg;
         }
 
-        Log.d(TAG, "in");
         // Basic setup of array and variable from source image
         int width = srcImg.getWidth();
         int height = srcImg.getHeight();
@@ -36,6 +36,7 @@ public class CannyEdgeDetectionImpl {
         // Apply gray filter
         helperUtil = new HelperUtilImpl();
         afterEffectArray = helperUtil.toGrayScale(afterEffectArray);
+        //afterEffectArray = helperUtil.getImgBlue();
 
         // Apply Gaussian filter
         gaussianFilter = new GaussianFilterImpl();
@@ -44,16 +45,17 @@ public class CannyEdgeDetectionImpl {
         // Apply Sobel filter
         SobelOperatorImpl sobelOperator = new SobelOperatorImpl();
         afterEffectArray = sobelOperator.applySobelOperator(afterEffectArray, width);
-        //printLog(afterEffectArray, width);
         char[] thetaArr = sobelOperator.getThetaArray();
-        printLog(thetaArr, width);
+
         // Apply Non-Maximum Suppression
         NonMaxSuppressionImpl nonMaxSuppression = new NonMaxSuppressionImpl();
-        //afterEffectArray = nonMaxSuppression.applyNonMaxSuppression(afterEffectArray, thetaArr, width);
+        afterEffectArray = nonMaxSuppression.applyNonMaxSuppression(afterEffectArray, thetaArr, width);
 
+        afterEffectArray = convertBack(afterEffectArray);
 
         // Convert int array to Bitmap
-        Bitmap afterEffectBitmap = Bitmap.createBitmap(afterEffectArray, 0, width, width, height, srcImg.getConfig());
+        //Bitmap afterEffectBitmap = Bitmap.createBitmap(afterEffectArray, 0, width, width, height, srcImg.getConfig());
+        Bitmap afterEffectBitmap = Bitmap.createBitmap(afterEffectArray, 0, width, width, height, Bitmap.Config.RGB_565);
         return afterEffectBitmap;
 
     }
@@ -95,6 +97,17 @@ public class CannyEdgeDetectionImpl {
             temp += val + " ";
         }
     }
+
+    private int[] convertBack(int[] src) {
+        int[] test = new int[src.length];
+        for(int i = 0; i < src.length; i++) {
+            if (src[i]  > 0) {
+                test[i] = 16777215;
+            }
+        }
+        return test;
+    }
+
 
 
 }

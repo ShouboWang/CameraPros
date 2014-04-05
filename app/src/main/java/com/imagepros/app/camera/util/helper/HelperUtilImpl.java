@@ -65,4 +65,17 @@ public class HelperUtilImpl {
         }
 
     }
+
+    public int[] getImgRed()
+    {
+        return this.imgRed;
+    }
+    public int[] getImgGreen()
+    {
+        return this.imgGreen;
+    }
+    public int[] getImgBlue()
+    {
+        return this.imgBlue;
+    }
 }

@@ -50,8 +50,10 @@ public class ImagePros extends Activity {
 
 
 
-        String path = mediaStorageDir.getPath() + File.separator + "square.jpg";
+        String path = mediaStorageDir.getPath() + File.separator + "diamond.jpg";
         Bitmap image = BitmapFactory.decodeFile(path, options);
+
+
 
         if(image == null) {
             Log.e(TAG, "IMAGE NOT FOUND");
@@ -64,16 +66,24 @@ public class ImagePros extends Activity {
         ImageView view = (ImageView)findViewById(R.id.camera_preview);
         Bitmap imageProcessed = null;
 
+        view.setImageBitmap(image); //new img
+
+
+        long start = System.currentTimeMillis();
+
+
         cannyEdgeDetection = new CannyEdgeDetectionImpl();
 
         for(int i = 0; i < 1; i++) {
 
-            long start = System.currentTimeMillis();
-            imageProcessed = cannyEdgeDetection.applyCannyEdgeDetection(image, 1, 1);
+            start = System.currentTimeMillis();
+            imageProcessed = cannyEdgeDetection.applyCannyEdgeDetection(image, 5, 3);
             long milli = System.currentTimeMillis() - start;
             Log.i(TAG,( milli)+"");
 
         }
+
+        Log.d(TAG, "new img");
         view.setImageBitmap(imageProcessed); //new img
 
 

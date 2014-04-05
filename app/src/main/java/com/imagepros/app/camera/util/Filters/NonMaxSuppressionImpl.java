@@ -18,23 +18,27 @@ public class NonMaxSuppressionImpl {
 
     private int checkIfMax(int[] srcImage, char[] thetaArr, int index, int srcImageWidth, int srcImageLength) {
 
+
         char theta = thetaArr[index];
+
 
         int srcImageValue1;
         int srcImageValue2;
         int srcOrigValue;
 
-        if(theta == 0) {
+        if(theta == (char)0) {
             srcImageValue1 = index + 1;
             srcImageValue2 = index - 1;
-        } else if(theta == 45) {
+        } else if(theta == (char)45) {
             srcImageValue1 = index + srcImageWidth - 1;
             srcImageValue2 = index - srcImageWidth + 1;
-        } else if(theta == 90) {
+        } else if(theta == (char)90) {
             srcImageValue1 = index + srcImageWidth;
             srcImageValue2 = index - srcImageWidth;
+        } else if(theta == (char)135) {
+            srcImageValue1 = index + srcImageWidth + 1;
+            srcImageValue2 = index - srcImageWidth - 1;
         } else {
-            Log.d("TTTEST", "Error " + theta);
             return 0;
         }
 
@@ -49,9 +53,20 @@ public class NonMaxSuppressionImpl {
         srcImageValue1 = srcImage[srcImageValue1];
         srcImageValue2 = srcImage[srcImageValue2];
         srcOrigValue = srcImage[index];
-        if(srcOrigValue > srcImageValue1 && srcOrigValue > srcImageValue2) {
-            return 16777215;
+
+
+        if(index == 564 || index == 565 || index == 566) {
+            Log.d("Nonmax index: ", index + "");
+            Log.d("Nonmax srcOrigValue ", srcOrigValue + "");
+            Log.d("Nonmax srcImageValue1 ", srcImageValue1 + "");
+            Log.d("Nonmax srcImageValue2 ", srcImageValue2 + "");
+
         }
+
+        if(srcOrigValue >= srcImageValue1 && srcOrigValue >= srcImageValue2) {
+            return srcOrigValue;
+        }
+
         return 0;
     }
 }
