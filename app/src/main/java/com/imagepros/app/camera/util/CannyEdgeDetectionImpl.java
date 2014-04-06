@@ -13,10 +13,10 @@
 
 import android.graphics.Bitmap;
 
-import com.imagepros.app.camera.util.Filters.GaussianFilterImpl;
-import com.imagepros.app.camera.util.Filters.HysteresisThresholdImpl;
-import com.imagepros.app.camera.util.Filters.NonMaxSuppressionImpl;
-import com.imagepros.app.camera.util.Filters.SobelOperatorImpl;
+import com.imagepros.app.camera.util.filters.GaussianFilterImpl;
+import com.imagepros.app.camera.util.filters.HysteresisThresholdImpl;
+import com.imagepros.app.camera.util.filters.NonMaxSuppressionImpl;
+import com.imagepros.app.camera.util.filters.SobelOperatorImpl;
 import com.imagepros.app.camera.util.helper.HelperUtilImpl;
 
 public class CannyEdgeDetectionImpl {
