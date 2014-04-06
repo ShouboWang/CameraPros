@@ -9,7 +9,7 @@
  * <date>March 5 2014</date>
  * */
 
-package com.imagepros.app.camera.util.filters;
+package com.imagepros.app.camera.util.Filters;
 
 public class GaussianFilterImpl {
 

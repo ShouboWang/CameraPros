@@ -9,14 +9,12 @@
  * <date>March 5 2014</date>
  * */
 
- package com.imagepros.app.camera.util;
+package com.imagepros.app.camera.util;
 
-import android.graphics.Bitmap;
-
-import com.imagepros.app.camera.util.filters.GaussianFilterImpl;
-import com.imagepros.app.camera.util.filters.HysteresisThresholdImpl;
-import com.imagepros.app.camera.util.filters.NonMaxSuppressionImpl;
-import com.imagepros.app.camera.util.filters.SobelOperatorImpl;
+import com.imagepros.app.camera.util.Filters.GaussianFilterImpl;
+import com.imagepros.app.camera.util.Filters.HysteresisThresholdImpl;
+import com.imagepros.app.camera.util.Filters.NonMaxSuppressionImpl;
+import com.imagepros.app.camera.util.Filters.SobelOperatorImpl;
 import com.imagepros.app.camera.util.helper.HelperUtilImpl;
 
 public class CannyEdgeDetectionImpl {
@@ -61,18 +59,7 @@ public class CannyEdgeDetectionImpl {
     }
 
     // Applies canny edge detection to an image
-    public Bitmap applyCannyEdgeDetection(Bitmap srcImg) {
-        if(srcImg == null) {
-            return srcImg;
-        }
-
-        // Basic setup of array and variable from source image
-        int width = srcImg.getWidth();
-        int height = srcImg.getHeight();
-        int[] afterEffectArray = new int[width * height];;
-
-        // Convert bitmap to int array
-        srcImg.getPixels(afterEffectArray, 0, width, 0, 0, width, height);
+    public int[] applyCannyEdgeDetection(int[] imgArray, int width) {
 
         // Create all the necessary classes
         HelperUtilImpl helperUtil = new HelperUtilImpl();
@@ -90,19 +77,16 @@ public class CannyEdgeDetectionImpl {
         hysteresisThreshold.setLowThreshold(hypLowThreshold);
 
         // Apply the effects
-        afterEffectArray = helperUtil.toGrayScale(afterEffectArray); // convert to gray scale
-        afterEffectArray = gaussianFilter.gaussianConvolution(afterEffectArray, width); // apply blue
-        afterEffectArray = sobelOperator.applySobelOperator(afterEffectArray, width); // apply sobel
+        imgArray = helperUtil.toGrayScale(imgArray); // convert to gray scale
+        imgArray = gaussianFilter.gaussianConvolution(imgArray, width); // apply blue
+        imgArray = sobelOperator.applySobelOperator(imgArray, width); // apply sobel
         char[] thetaArr = sobelOperator.getAtanArr(); //get the theta array from sobel
-        afterEffectArray = nonMaxSuppression.applyNonMaxSuppression(afterEffectArray, thetaArr, width); //apply non-max suppression
-        afterEffectArray = hysteresisThreshold.applyHysteresisThreshold(afterEffectArray, width); //apply double threshold and hypstersis
+        imgArray = nonMaxSuppression.applyNonMaxSuppression(imgArray, thetaArr, width); //apply non-max suppression
+        imgArray = hysteresisThreshold.applyHysteresisThreshold(imgArray, width); //apply double threshold and hypstersis
 
         //Convert the array to a black and white image
-        afterEffectArray = helperUtil.convertBack(afterEffectArray);
+        imgArray = helperUtil.convertBack(imgArray);
 
-        //Bitmap afterEffectBitmap = Bitmap.createBitmap(afterEffectArray, 0, width, width, height, srcImg.getConfig());
-        Bitmap afterEffectBitmap = Bitmap.createBitmap(afterEffectArray, 0, width, width, height, Bitmap.Config.RGB_565);
-        return afterEffectBitmap;
-
+        return imgArray;
     }
 }

@@ -11,6 +11,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
+import com.imagepros.app.camera.AndroidCannyEdgeDetector;
 import com.imagepros.app.camera.CustomCameraImpl;
 import com.imagepros.app.camera.util.CannyEdgeDetectionImpl;
 import com.imagepros.app.display.CustomPreviewImpl;
@@ -25,7 +26,7 @@ public class ImagePros extends Activity {
     private CustomPreviewImpl mCameraPreview;
     private final CustomCameraImpl mCustomCamera = new CustomCameraImpl();
 
-    private CannyEdgeDetectionImpl cannyEdgeDetection;
+    private AndroidCannyEdgeDetector androidCannyEdgeDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,12 +73,12 @@ public class ImagePros extends Activity {
         long start = System.currentTimeMillis();
 
 
-        cannyEdgeDetection = new CannyEdgeDetectionImpl();
+        androidCannyEdgeDetector = new AndroidCannyEdgeDetector();
 
         for(int i = 0; i < 1; i++) {
 
             start = System.currentTimeMillis();
-            imageProcessed = cannyEdgeDetection.applyCannyEdgeDetection(image);
+            imageProcessed = androidCannyEdgeDetector.applyCannyEdgeDetection(image);
             long milli = System.currentTimeMillis() - start;
             Log.i(TAG,( milli)+"");
 
