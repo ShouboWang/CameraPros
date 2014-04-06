@@ -52,8 +52,8 @@ public class CannyEdgeDetectionImpl {
     public CannyEdgeDetectionImpl() {
         gaussianKernelSize = 5;
         gaussianKernelSigma = 3;
-        hypHighThreshold = 150;
-        hypLowThreshold = 50;
+        hypHighThreshold = 80;
+        hypLowThreshold = 30;
         sobelHighThreshold = 30;
         sobelLowThreshold = -30;
     }

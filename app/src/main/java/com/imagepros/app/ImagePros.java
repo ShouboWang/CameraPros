@@ -51,7 +51,7 @@ public class ImagePros extends Activity {
 
 
 
-        String path = mediaStorageDir.getPath() + File.separator + "diamond.jpg";
+        String path = mediaStorageDir.getPath() + File.separator + "testimage1.png";
         Bitmap image = BitmapFactory.decodeFile(path, options);
 
 
