@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.imagepros.app.camera.util.Filters.GaussianFilterImpl;
+import com.imagepros.app.camera.util.Filters.HypstersisThreshold;
 import com.imagepros.app.camera.util.Filters.NonMaxSuppressionImpl;
 import com.imagepros.app.camera.util.Filters.SobelOperatorImpl;
 import com.imagepros.app.camera.util.helper.HelperUtilImpl;
@@ -50,6 +51,9 @@ public class CannyEdgeDetectionImpl {
         // Apply Non-Maximum Suppression
         NonMaxSuppressionImpl nonMaxSuppression = new NonMaxSuppressionImpl();
         afterEffectArray = nonMaxSuppression.applyNonMaxSuppression(afterEffectArray, thetaArr, width);
+
+        HypstersisThreshold hypstersisThreshold = new HypstersisThreshold();
+        afterEffectArray = hypstersisThreshold.applyHypstersisThreshold(afterEffectArray, width);
 
         afterEffectArray = convertBack(afterEffectArray);
 
