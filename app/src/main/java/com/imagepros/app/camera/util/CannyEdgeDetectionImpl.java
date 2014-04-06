@@ -1,27 +1,67 @@
-package com.imagepros.app.camera.util;
+/**
+ * <class>CannyEdgeDetectionImpl</class>
+ *
+ * <summary>
+ * This Class applies canny edge detection to an image
+ * </summary>
+ *
+ * <author>Jack Wang</author>
+ * <date>March 5 2014</date>
+ * */
+
+ package com.imagepros.app.camera.util;
 
 import android.graphics.Bitmap;
-import android.util.Log;
 
 import com.imagepros.app.camera.util.Filters.GaussianFilterImpl;
-import com.imagepros.app.camera.util.Filters.HypstersisThreshold;
+import com.imagepros.app.camera.util.Filters.HysteresisThresholdImpl;
 import com.imagepros.app.camera.util.Filters.NonMaxSuppressionImpl;
 import com.imagepros.app.camera.util.Filters.SobelOperatorImpl;
 import com.imagepros.app.camera.util.helper.HelperUtilImpl;
 
-/**
- * Created by shoubo.wang on 17/03/14.
- */
 public class CannyEdgeDetectionImpl {
 
-    private final String TAG = "CameraPros_CannyEdgeDetectionImpl";
+    //Fields
+    private int gaussianKernelSize;
+    private int gaussianKernelSigma;
+    private int hypHighThreshold;
+    private int hypLowThreshold;
+    private int sobelHighThreshold;
+    private int sobelLowThreshold;
 
-    private GaussianFilterImpl gaussianFilter;
-    private HelperUtilImpl helperUtil;
+    // Setters
+    public void setGaussianKernelSize(int gaussianKernelSize) {
+        this.gaussianKernelSize = gaussianKernelSize;
+    }
+    public void setGaussianKernelSigma(int gaussianKernelSigma) {
+        this.gaussianKernelSigma = gaussianKernelSigma;
+    }
+    public void setHypHighThreshold(int hypHighThreshold){
+        this.hypHighThreshold = hypHighThreshold;
+    }
+    public void setHypLowThreshold(int hypLowThreshold){
+        this.hypLowThreshold = hypLowThreshold;
+    }
+    public void setSobelHighThreshold(int sobelHighThreshold){
+        this.sobelHighThreshold = sobelHighThreshold;
+    }
+    public void setSobelLowThreshold(int sobelLowThreshold){
+        this.sobelLowThreshold = sobelLowThreshold;
+    }
 
-    public Bitmap applyCannyEdgeDetection(Bitmap srcImg, int gaussianKernelSize, int gaussianKernelSigma) {
+    // Constructor
+    // Set the default values for CannyEdge detector
+    public CannyEdgeDetectionImpl() {
+        gaussianKernelSize = 5;
+        gaussianKernelSigma = 3;
+        hypHighThreshold = 150;
+        hypLowThreshold = 50;
+        sobelHighThreshold = 30;
+        sobelLowThreshold = -30;
+    }
 
-        Log.d(TAG, "in1");
+    // Applies canny edge detection to an image
+    public Bitmap applyCannyEdgeDetection(Bitmap srcImg) {
         if(srcImg == null) {
             return srcImg;
         }
@@ -34,84 +74,35 @@ public class CannyEdgeDetectionImpl {
         // Convert bitmap to int array
         srcImg.getPixels(afterEffectArray, 0, width, 0, 0, width, height);
 
-        // Apply gray filter
-        helperUtil = new HelperUtilImpl();
-        afterEffectArray = helperUtil.toGrayScale(afterEffectArray);
-        //afterEffectArray = helperUtil.getImgBlue();
-
-        // Apply Gaussian filter
-        gaussianFilter = new GaussianFilterImpl();
-        afterEffectArray = gaussianFilter.gaussianConvolution(afterEffectArray, width, gaussianKernelSize, gaussianKernelSigma);
-
-        // Apply Sobel filter
+        // Create all the necessary classes
+        HelperUtilImpl helperUtil = new HelperUtilImpl();
+        GaussianFilterImpl gaussianFilter = new GaussianFilterImpl();
         SobelOperatorImpl sobelOperator = new SobelOperatorImpl();
-        afterEffectArray = sobelOperator.applySobelOperator(afterEffectArray, width);
-        char[] thetaArr = sobelOperator.getThetaArray();
-
-        // Apply Non-Maximum Suppression
         NonMaxSuppressionImpl nonMaxSuppression = new NonMaxSuppressionImpl();
-        afterEffectArray = nonMaxSuppression.applyNonMaxSuppression(afterEffectArray, thetaArr, width);
+        HysteresisThresholdImpl hysteresisThreshold = new HysteresisThresholdImpl();
 
-        HypstersisThreshold hypstersisThreshold = new HypstersisThreshold();
-        afterEffectArray = hypstersisThreshold.applyHypstersisThreshold(afterEffectArray, width);
+        // Apply the settings
+        gaussianFilter.setKernelDeviation(gaussianKernelSigma);
+        gaussianFilter.setKernelSize(gaussianKernelSize);
+        sobelOperator.setHighValueThreshold(sobelHighThreshold);
+        sobelOperator.setLowValueThreshold(sobelLowThreshold);
+        hysteresisThreshold.setHighThreshold(hypHighThreshold);
+        hysteresisThreshold.setLowThreshold(hypLowThreshold);
 
-        afterEffectArray = convertBack(afterEffectArray);
+        // Apply the effects
+        afterEffectArray = helperUtil.toGrayScale(afterEffectArray); // convert to gray scale
+        afterEffectArray = gaussianFilter.gaussianConvolution(afterEffectArray, width); // apply blue
+        afterEffectArray = sobelOperator.applySobelOperator(afterEffectArray, width); // apply sobel
+        char[] thetaArr = sobelOperator.getAtanArr(); //get the theta array from sobel
+        afterEffectArray = nonMaxSuppression.applyNonMaxSuppression(afterEffectArray, thetaArr, width); //apply non-max suppression
+        afterEffectArray = hysteresisThreshold.applyHysteresisThreshold(afterEffectArray, width); //apply double threshold and hypstersis
 
-        // Convert int array to Bitmap
+        //Convert the array to a black and white image
+        afterEffectArray = helperUtil.convertBack(afterEffectArray);
+
         //Bitmap afterEffectBitmap = Bitmap.createBitmap(afterEffectArray, 0, width, width, height, srcImg.getConfig());
         Bitmap afterEffectBitmap = Bitmap.createBitmap(afterEffectArray, 0, width, width, height, Bitmap.Config.RGB_565);
         return afterEffectBitmap;
 
     }
-
-    private void printLog(int[] img, int width) {
-        String temp = "";
-        String val;
-        for(int i = 0; i < img.length; i++) {
-            if(i % width == 0) {
-                Log.d(TAG, temp);
-                temp = "";
-            }
-
-            val = img[i] + "";
-            if(val.length() == 2) {
-                val = val + " ";
-            } else if (val.length() == 1) {
-                val = val + "  ";
-            }
-            temp += val + " ";
-        }
-    }
-
-    private void printLog(char[] img, int width) {
-        String temp = "";
-        String val;
-        for(int i = 0; i < img.length; i++) {
-            if(i % width == 0) {
-                Log.d(TAG, temp);
-                temp = "";
-            }
-
-            val = (int)(img[i]) + "";
-            if(val.length() == 2) {
-                val = val + " ";
-            } else if (val.length() == 1) {
-                val = val + "  ";
-            }
-            temp += val + " ";
-        }
-    }
-
-    private int[] convertBack(int[] src) {
-        int[] test = new int[src.length];
-        for(int i = 0; i < src.length; i++) {
-            if (src[i]  > 0) {
-                test[i] = 16777215;
-            }
-        }
-        return test;
-    }
-
-
-
 }

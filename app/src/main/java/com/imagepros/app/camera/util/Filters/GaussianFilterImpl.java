@@ -1,33 +1,49 @@
-package com.imagepros.app.camera.util.Filters;
+/**
+ * <class>GaussianFilterImpl</class>
+ *
+ * <summary>
+ * This Class is used by CannyEdgeDetectionImpl Gaussian blur
+ * </summary>
+ *
+ * <author>Jack Wang</author>
+ * <date>March 5 2014</date>
+ * */
 
-import android.util.Log;
+package com.imagepros.app.camera.util.Filters;
 
 public class GaussianFilterImpl {
 
-    private final int redMask = 0xFF;
-    private final int greenMask = 0xFF00;
-    private final int blueMask = 0xFF0000;
+    // fields
+    private int kernelSize;
+    private int kernelDeviation;
 
-    String TAG = "Test:";
+    // getters
+    public void setKernelSize(int kernelSize) {
+        this.kernelSize = kernelSize;
+    }
+    public void setKernelDeviation(int kernelDeviation){
+        this.kernelDeviation = kernelDeviation;
+    }
 
-    public int[] gaussianConvolution(int[] srcImgArr, int srcImgWidth, int size ,int deviation) {
-
+    // This Class is used by CannyEdgeDetectionImpl Gaussian blur
+    // returns the image after blue
+    public int[] gaussianConvolution(int[] srcImgArr, int srcImgWidth) {
         int srcImgLength = srcImgArr.length;
 
-        float[] kernel = get1DGaussianKernel( size, deviation );
+        // get the gaussian kernel
+        float[] kernel = get1DGaussianKernel( kernelSize, kernelDeviation );
 
         int[] resultArr1 = new int[srcImgLength];
         int[] resultArr2 = new int[srcImgLength];
 
-
         // Process X direction
         for( int index = kernel.length/2; index < srcImgLength - kernel.length/2; index++ ) {
-            resultArr1[index] = processPointX2(srcImgArr, index, kernel);
+            resultArr1[index] = processPointX(srcImgArr, index, kernel);
         }
 
-        // Get Y direction
+        // Process Y direction
         for( int index = kernel.length/2; index < srcImgLength - kernel.length/2; index++ ) {
-            resultArr2[index] = processPointY2(resultArr1, index, srcImgWidth, kernel);
+            resultArr2[index] = processPointY(resultArr1, index, srcImgWidth, kernel);
         }
 
         return resultArr2;
@@ -35,7 +51,6 @@ public class GaussianFilterImpl {
 
     //Creates the 1d Gaussian Mask
     private float[] get1DGaussianKernel( int size, int deviation ) {
-
         float[] mask = new float[size];
 
         int deviationSqr2 = 2 * deviation * deviation;
@@ -52,7 +67,6 @@ public class GaussianFilterImpl {
 
     // Normalize the filter by dividing all valued by the sum
     private float[] normalizeGaussianKernel( float[] kernel ) {
-
         float sum = 0.0f;
 
         for( float kernelValue : kernel) {
@@ -71,71 +85,6 @@ public class GaussianFilterImpl {
     // Gets the color value via byte shifting
     // Returns the processed int value
     private int processPointX(int[] srcImg, int x, float[] kernel) {
-
-        final int half = kernel.length / 2;
-
-        int colorRed = 0;
-        int colorBlue = 0;
-        int colorGreen = 0;
-
-        float kernelValue;
-        int colorValue;
-
-        for( int i = (-1) * half; i <= half; i++ ) {
-
-            kernelValue = kernel[i + half];
-            colorValue = srcImg[i + x];
-
-            colorRed += (colorValue & redMask) * kernelValue;
-            colorGreen += ((colorValue & greenMask) >> 8) * kernelValue;
-            colorBlue += ((colorValue & blueMask) >> 16) * kernelValue;
-        }
-
-        return colorRed + (colorGreen << 8) + (colorBlue << 16);
-    }
-
-    // Process the array in the Y direction
-    // Gets the color value via byte shifting
-    // Returns the processed int value
-    private int processPointY(int[] srcImg, int x, int width ,float[] kernel) {
-
-        final int half = kernel.length / 2;
-        final int srcImgLength = srcImg.length;
-
-        int colorRed = 0;
-        int colorBlue = 0;
-        int colorGreen = 0;
-
-        float kernelValue;
-        int colorValue;
-        int colorValueIndex;
-
-        for( int i = (-1) * half; i <= half; i++ ) {
-
-            colorValueIndex = x + Math.abs(i) * width;
-
-            // Check for out of bound
-            if(colorValueIndex <= 0 || colorValueIndex >= srcImgLength) {
-                continue;
-            }
-
-            kernelValue = kernel[i + half];
-            colorValue = srcImg[colorValueIndex];
-
-            colorRed += (colorValue & redMask) * kernelValue;
-            colorGreen += ((colorValue & greenMask) >> 8) * kernelValue;
-            colorBlue += ((colorValue & blueMask) >> 16) * kernelValue;
-
-        }
-
-        return colorRed + (colorGreen << 8) + (colorBlue << 16);
-    }
-
-    // Process the array in the X direction
-    // Gets the color value via byte shifting
-    // Returns the processed int value
-    private int processPointX2(int[] srcImg, int x, float[] kernel) {
-
         final int half = kernel.length / 2;
 
         float kernelValue;
@@ -143,7 +92,6 @@ public class GaussianFilterImpl {
         double processedColor = 0;
 
         for( int i = (-1) * half; i <= half; i++ ) {
-
             kernelValue = kernel[i + half];
             colorValue = srcImg[i + x];
 
@@ -155,8 +103,7 @@ public class GaussianFilterImpl {
     // Process the array in the Y direction
     // Gets the color value via byte shifting
     // Returns the processed int value
-    private int processPointY2(int[] srcImg, int x, int width ,float[] kernel) {
-
+    private int processPointY(int[] srcImg, int x, int width ,float[] kernel) {
         final int half = kernel.length / 2;
         final int srcImgLength = srcImg.length;
 
@@ -166,7 +113,6 @@ public class GaussianFilterImpl {
         double processedColor = 0;
 
         for( int i = (-1) * half; i <= half; i++ ) {
-
             colorValueIndex = x + i * width;
             kernelValue = kernel[i + half];
 
@@ -177,9 +123,7 @@ public class GaussianFilterImpl {
             }
 
             colorValue = srcImg[colorValueIndex];
-
             processedColor += colorValue * kernelValue;
-
         }
         return (int)(processedColor + 0.5);
     }

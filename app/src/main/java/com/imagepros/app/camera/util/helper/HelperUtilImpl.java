@@ -1,40 +1,42 @@
+/**
+ * <class>HelperUtilImpl</class>
+ *
+ * <summary>
+ * This Class is used by CannyEdgeDetectionImpl for any common operations
+ * or helping operations
+ * </summary>
+ *
+ * <author>Jack Wang</author>
+ * <date>March 5 2014</date>
+ * */
+
 package com.imagepros.app.camera.util.helper;
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
-import android.graphics.Paint;
-
-/**
- * Created by shoubo.wang on 17/03/14.
- */
 public class HelperUtilImpl {
 
+    // fields
     private int[] imgRed;
     private int[] imgGreen;
     private int[] imgBlue;
 
-
-    public Bitmap toGrayscale(Bitmap bmpOriginal)
+    // getters
+    public int[] getImgRed()
     {
-        int width, height;
-        height = bmpOriginal.getHeight();
-        width = bmpOriginal.getWidth();
-
-        Bitmap bmpGrayscale = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
-        Canvas c = new Canvas(bmpGrayscale);
-        Paint paint = new Paint();
-        ColorMatrix cm = new ColorMatrix();
-        cm.setSaturation(0);
-        ColorMatrixColorFilter f = new ColorMatrixColorFilter(cm);
-        paint.setColorFilter(f);
-        c.drawBitmap(bmpOriginal, 0, 0, paint);
-        return bmpGrayscale;
+        return this.imgRed;
+    }
+    public int[] getImgGreen()
+    {
+        return this.imgGreen;
+    }
+    public int[] getImgBlue()
+    {
+        return this.imgBlue;
     }
 
+    // Converts an image to gray scale
+    // returns an int array of value 0-255 representing an
+    // average of RGB color distribution
     public int[] toGrayScale(int[] srcImage) {
-
         int srcImageLength = srcImage.length;
         int[] afterEffectArray = new int[srcImageLength];
 
@@ -47,15 +49,15 @@ public class HelperUtilImpl {
         return afterEffectArray;
     }
 
+    // Extracts RGB color from an image
+    // Populates corresponding arrays
     public void getRGBFromImage(int[] srcImage) {
-
         int srcImageLength = srcImage.length;
         int srcImagePixel;
 
         imgRed = new int[srcImageLength];
         imgGreen = new int[srcImageLength];
         imgBlue = new int[srcImageLength];
-
 
         for(int index = 0; index < srcImageLength; index++) {
             srcImagePixel = srcImage[index];
@@ -66,16 +68,14 @@ public class HelperUtilImpl {
 
     }
 
-    public int[] getImgRed()
-    {
-        return this.imgRed;
-    }
-    public int[] getImgGreen()
-    {
-        return this.imgGreen;
-    }
-    public int[] getImgBlue()
-    {
-        return this.imgBlue;
+    // Takes an image, and magnify all values above 0(black) to 16777215(white)
+    public int[] convertBack(int[] src) {
+        int[] test = new int[src.length];
+        for(int i = 0; i < src.length; i++) {
+            if (src[i]  > 0) {
+                test[i] = 16777215;
+            }
+        }
+        return test;
     }
 }

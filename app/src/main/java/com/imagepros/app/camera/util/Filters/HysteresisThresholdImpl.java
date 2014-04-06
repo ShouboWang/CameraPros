@@ -1,28 +1,48 @@
-package com.imagepros.app.camera.util.Filters;
-
-import android.util.Log;
-
 /**
- * Created by jack on 2014-04-05.
- */
-public class HypstersisThreshold {
+ * <class>NonMaxSuppressionImpl</class>
+ *
+ * <summary>
+ * This Class is used by CannyEdgeDetectionImpl to apply Hysteresis threshold
+ * on an image of int array
+ * </summary>
+ *
+ * <author>Jack Wang</author>
+ * <date>March 5 2014</date>
+ * */
 
-    int highThreshold = 150; //500
-    int lowThreshold = 50; //100
+ package com.imagepros.app.camera.util.Filters;
 
+public class HysteresisThresholdImpl {
+
+    // final values
     final int MAX_VALUE = 2;
     final int MIN_VALUE = 0;
     final int CHECK_VALUE = 1;
 
+    // fields
+    private int highThreshold;
+    private int lowThreshold;
 
-    public int[] applyHypstersisThreshold(int[] srcImage, int width) {
-        applyThreshold(srcImage, width);
+    //Setters for high/low thresholds;
+    public void setHighThreshold(int highThreshold) {
+        this.highThreshold = highThreshold;
+    }
+    public void setLowThreshold(int lowThreshold) {
+        this.lowThreshold = lowThreshold;
+    }
+
+    // This Class is used by CannyEdgeDetectionImpl to apply Hysteresis threshold
+    // on an image of int array
+    // returns the image after hysteresis threshold
+    public int[] applyHysteresisThreshold(int[] srcImage, int width) {
         int srcLength = srcImage.length;
         int height = srcLength / width;
         int index;
 
+        // apply double threshold
+        applyDoubleThreshold(srcImage, width);
 
-
+        // apply hysteresis threshold
         for(int row = 1; row < height - 1; row++) {
             for(int col = 1; col < width - 1; col++) {
                 index = row * width + col;
@@ -34,6 +54,7 @@ public class HypstersisThreshold {
             }
         }
 
+        //change any value that is not MAX_VALUE to MIN_VALUE
         for (int i = 0; i < srcLength; i++) {
             if (srcImage[i] != MAX_VALUE) {
                 srcImage[i] = MIN_VALUE;
@@ -42,9 +63,12 @@ public class HypstersisThreshold {
         return srcImage;
     }
 
-    private void applyThreshold(int[] srcImage, int width) {
+    // apply the double threshold to an image array
+    // returns the image after threshold
+    private void applyDoubleThreshold(int[] srcImage, int width) {
         int srcLength = srcImage.length;
 
+        // avoid boundary conditions
         for(int index = width; index < srcLength - width; index++) {
             if(srcImage[index] > highThreshold) {
                 srcImage[index] = MAX_VALUE;
@@ -56,9 +80,11 @@ public class HypstersisThreshold {
         }
     }
 
+    // Checks if a given pixel has surrounding pixel with MAX VALUE
+    // return true if there is a surrounding pixel with MAX_VALUE
+    // false otherwise
     private boolean nextToMax(int[] srcImage, int index, int width) {
 
-        //top
         if(srcImage[index - width] == MAX_VALUE) {
             return true;
         } else if (srcImage[index - width + 1] == MAX_VALUE) {
@@ -79,6 +105,8 @@ public class HypstersisThreshold {
         return false;
     }
 
+    // Given an index of pixel with CHECK_VALUE, populates all surrounding pixel with
+    // CHECK_VALUE to MAX_VALUE
     private void fillEdge(int[] srcImage, int index, int width, int length) {
 
         // Make sure that the index is not outside of the boundary or go out of the screen
