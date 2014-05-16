@@ -12,6 +12,8 @@
 
 package com.imagepros.app.camera.util.Filters;
 
+import android.util.Log;
+
 public class SobelOperatorImpl {
 
     //arc tan array
@@ -35,20 +37,33 @@ public class SobelOperatorImpl {
 
     //This Class applies the sobel mask in the X and Y direction to a int[] image
     //This Class will also calculate the Theta value for each pixel
-    public int[] applySobelOperator(int[] srcImage, int srcImageWidth) {
+    public void applySobelOperator( int[] srcImage, int srcImageWidth, int startIndex, int endIndex ) {
         int srcImageLength = srcImage.length;
-
-        int[] afterFilterImage = new int[srcImageLength];
-        atanArr = new char[srcImageLength];
+        int[] replicaArray = replicateArray(srcImage, startIndex, endIndex);
+        atanArr = new char[endIndex - startIndex];
 
         //Apply the operator to every pixel
-        for(int index = 1; index < srcImageLength - 1; index++) {
-            afterFilterImage[index] = sobelOperator(srcImage, index, srcImageWidth, srcImageLength);
+        if(startIndex == 0) {
+            startIndex = 1;
+        }
+        if(endIndex == srcImageLength) {
+            endIndex = srcImageLength - 1;
         }
 
-        return afterFilterImage;
+        for(int index = startIndex; index < endIndex; index++) {
+            srcImage[index] = sobelOperator(replicaArray, index - startIndex, srcImageWidth, replicaArray.length);
+        }
     }
 
+    private int[] replicateArray( int[] srcImage, int startIndex, int endIndex )
+    {
+        int[] replciaArray = new int[endIndex - startIndex];
+        for(int i = startIndex; i < endIndex; i++)
+        {
+            replciaArray[i - startIndex] = srcImage[i];
+        }
+        return replciaArray;
+    }
     // Takes the index of the pixel and calculate X and Y gradient by applying
     // Sobel operator in the X and Y direction
     // Also populates the theta array by calculating the theta based on the gradient in the X and Y direction

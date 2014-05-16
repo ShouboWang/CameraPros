@@ -4,5 +4,6 @@
     <string name="app_name">ImagePros</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
 </resources>

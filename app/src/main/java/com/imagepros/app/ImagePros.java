@@ -15,8 +15,10 @@ import com.imagepros.app.camera.AndroidCannyEdgeDetector;
 import com.imagepros.app.camera.CustomCameraImpl;
 import com.imagepros.app.camera.util.CannyEdgeDetectionImpl;
 import com.imagepros.app.display.CustomPreviewImpl;
+import com.imagepros.app.file.FileUtilImpl;
 
 import java.io.File;
+import java.io.FileOutputStream;
 
 public class ImagePros extends Activity {
 
@@ -39,30 +41,27 @@ public class ImagePros extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_image_pros);
+        setContentView(R.layout.activity_image_pros2);
+
+        cameraclass();
+
+    }
+
+    private void cameraclass(){
 
 
+        Log.i(TAG, "I AM IMMMM");
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = 1;  // >1 to return smaller image to save memory
         options.inScaled = false;
 
         File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), "MyCameraApp");
+        Environment.DIRECTORY_PICTURES), "MyCameraApp");
 
 
 
-        String path = mediaStorageDir.getPath() + File.separator + "testimage1.png";
+        String path = mediaStorageDir.getPath() + File.separator + "diamond.jpg";
         Bitmap image = BitmapFactory.decodeFile(path, options);
-
-
-
-        if(image == null) {
-            Log.e(TAG, "IMAGE NOT FOUND");
-        }
-
-        //Drawable drawable = getResources().getDrawable(R.drawable.testimg4);
-        //Bitmap image = ((BitmapDrawable) drawable).getBitmap();
-        //Bitmap image = BitmapFactory.decodeResource(getResources(), R.drawable.circle);
 
         ImageView view = (ImageView)findViewById(R.id.camera_preview);
         Bitmap imageProcessed = null;
@@ -70,7 +69,7 @@ public class ImagePros extends Activity {
         view.setImageBitmap(image); //new img
 
 
-        long start = System.currentTimeMillis();
+        long start;
 
 
         androidCannyEdgeDetector = new AndroidCannyEdgeDetector();
@@ -87,15 +86,26 @@ public class ImagePros extends Activity {
         Log.d(TAG, "new img");
         view.setImageBitmap(imageProcessed); //new img
 
+        FileUtilImpl file = new FileUtilImpl();
+        file.getOutputMediaFile(1);
 
-        //mCamera = mCustomCamera.getCameraInstance();
-        //mCameraPreview = new CustomPreviewImpl(this, mCamera);
+        FileOutputStream out;
+        try {
+            out = new FileOutputStream(file.getOutputMediaFile(1));
+            imageProcessed.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+//        mCamera = mCustomCamera.getCameraInstance();
+ //       mCameraPreview = new CustomPreviewImpl(this, mCamera);
 
         //FrameLayout preview = (FrameLayout)findViewById(R.id.camera_preview);
 
         //preview.addView(mCameraPreview);
-
         /*
+
         Button captureButton = (Button)findViewById(R.id.button_capture);
 
         captureButton.setOnClickListener(
@@ -107,5 +117,8 @@ public class ImagePros extends Activity {
                 }
         );
         */
+
+
     }
+
 }

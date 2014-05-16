@@ -43,7 +43,7 @@ public class AndroidCannyEdgeDetector {
     // Initialize CannyEdgeDetection
     public AndroidCannyEdgeDetector()
     {
-        cannyEdgeDetection = new CannyEdgeDetectionImpl();
+
     }
 
     public Bitmap applyCannyEdgeDetection(Bitmap srcImage) {
@@ -59,8 +59,12 @@ public class AndroidCannyEdgeDetector {
         // Convert bitmap to int array
         srcImage.getPixels(intImageArray, 0, width, 0, 0, width, height);
 
+        cannyEdgeDetection = new CannyEdgeDetectionImpl(intImageArray, width, (int)(intImageArray.length * 0.25), (int)(intImageArray.length/2));
+        //cannyEdgeDetection = new CannyEdgeDetectionImpl(intImageArray, width, 0, intImageArray.length/2);
         //Canny edge detection
-        intImageArray = cannyEdgeDetection.applyCannyEdgeDetection(intImageArray, width);
+        cannyEdgeDetection.applyCannyEdgeDetection();
+
+        intImageArray = cannyEdgeDetection.getImageArray();
 
         //Bitmap afterEffectBitmap = Bitmap.createBitmap(afterEffectArray, 0, width, width, height, srcImg.getConfig());
         Bitmap afterEffectBitmap = Bitmap.createBitmap(intImageArray, 0, width, width, height, Bitmap.Config.RGB_565);

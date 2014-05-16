@@ -12,6 +12,8 @@
 
 package com.imagepros.app.camera.util.helper;
 
+import android.util.Log;
+
 public class HelperUtilImpl {
 
     // fields
@@ -36,17 +38,13 @@ public class HelperUtilImpl {
     // Converts an image to gray scale
     // returns an int array of value 0-255 representing an
     // average of RGB color distribution
-    public int[] toGrayScale(int[] srcImage) {
-        int srcImageLength = srcImage.length;
-        int[] afterEffectArray = new int[srcImageLength];
-
+    public void toGrayScale(int[] srcImage, int startIndex, int endIndex) {
         getRGBFromImage(srcImage);
 
-        for(int index = 0; index < srcImageLength; index++) {
-            afterEffectArray[index] = (int)(imgRed[index]*0.2989 + imgBlue[index]*0.5870 + imgGreen[index]*0.1140 + 0.5);
+        for(int index = startIndex; index < endIndex; index++) {
+            //srcImage[index] = (int)(imgRed[index]*0.2989 + imgBlue[index]*0.5870 + imgGreen[index]*0.1140 + 0.5);
+            srcImage[index] = (imgRed[index]);
         }
-
-        return afterEffectArray;
     }
 
     // Extracts RGB color from an image
@@ -69,13 +67,15 @@ public class HelperUtilImpl {
     }
 
     // Takes an image, and magnify all values above 0(black) to 16777215(white)
-    public int[] convertBack(int[] src) {
-        int[] test = new int[src.length];
-        for(int i = 0; i < src.length; i++) {
+    public void convertBack(int[] src, int start, int end) {
+        for(int i = start; i < end; i++) {
             if (src[i]  > 0) {
-                test[i] = 16777215;
+                src[i] = 0;
+            }
+            else
+            {
+                src[i] = 16777215;
             }
         }
-        return test;
     }
 }
