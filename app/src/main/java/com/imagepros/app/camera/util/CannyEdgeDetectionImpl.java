@@ -13,6 +13,7 @@ package com.imagepros.app.camera.util;
 
 import android.util.Log;
 
+import com.imagepros.app.camera.util.Filters.BoxBlur;
 import com.imagepros.app.camera.util.Filters.GaussianFilterImpl;
 import com.imagepros.app.camera.util.Filters.HysteresisThresholdImpl;
 import com.imagepros.app.camera.util.Filters.NonMaxSuppressionImpl;
@@ -89,6 +90,8 @@ public class CannyEdgeDetectionImpl {
 
     // Applies canny edge detection to an image
     public void applyCannyEdgeDetection() {
+
+
 
         // Create all the necessary classes
         HelperUtilImpl helperUtil = new HelperUtilImpl();

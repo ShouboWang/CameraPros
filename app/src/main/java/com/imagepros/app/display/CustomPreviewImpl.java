@@ -5,6 +5,9 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.hardware.Camera;
 import android.util.Log;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Rect;
 
 /**
  * Created by Jack on 3/8/14.
@@ -63,6 +66,12 @@ public class CustomPreviewImpl extends SurfaceView implements SurfaceHolder.Call
         }
     }
 
+    @Override
+    protected void onDraw(Canvas canvas) {
+      //  canvas.drawRect(new Rect((int) Math.random() * 100,
+       //         (int) Math.random() * 100, 200, 200), rectanglePaint);
+        Log.w(this.getClass().getName(), "On Draw Called");
+    }
     /*
     @Override
     public void onPreviewFrame(byte[] data, Camera camera)

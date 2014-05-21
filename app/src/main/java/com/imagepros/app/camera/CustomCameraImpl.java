@@ -5,12 +5,14 @@ import android.util.Log;
 
 import android.content.Context;
 import android.hardware.Camera;
+import android.hardware.Camera.Parameters;
 import android.content.pm.PackageManager;
 
 import com.imagepros.app.file.FileUtilImpl;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.List;
 
 public class CustomCameraImpl {
 
@@ -29,8 +31,21 @@ public class CustomCameraImpl {
     public Camera getCameraInstance() {
         Camera camera = null;
 
+
+
+
+
         try {
             camera = Camera.open();
+            Parameters parameters = camera.getParameters();
+            List<Camera.Size> sizes = parameters.getSupportedPreviewSizes();
+            Camera.Size size = getOptimalSize(sizes);
+            parameters.setPreviewSize(size.width, size.height);
+            parameters.setPictureSize(size.width, size.height);
+            camera.setParameters(parameters);
+
+
+
         } catch(Exception ex) {
             Log.e(TAG, ex.toString());
         }
@@ -38,8 +53,15 @@ public class CustomCameraImpl {
         return camera;
     }
 
+    private Camera.Size getOptimalSize (List<Camera.Size> sizes) {
 
-    public Camera.PictureCallback getPictureCallback() {
+        return sizes.get(0);
+    }
+
+
+    private String path_;
+    public Camera.PictureCallback getPictureCallback(String path) {
+        path_ = path;
         return mPicture;
     }
 
@@ -48,9 +70,10 @@ public class CustomCameraImpl {
         public void onPictureTaken(byte[] bytes, Camera camera) {
 
             FileUtilImpl cameraFileUtil = new FileUtilImpl();
+            Log.d("ininin", "in");
 
-            File pictureFile = null;
-            //cameraFileUtil.getOutputMediaFile(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE);
+            File pictureFile;
+            pictureFile = cameraFileUtil.getOutputMediaFile(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE, path_);
 
             if(pictureFile == null) {
                 return;
@@ -63,9 +86,10 @@ public class CustomCameraImpl {
             } catch (Exception ex) {
                 Log.e(TAG, ex.getMessage());
             }
+
+
         }
     };
-
 
 
 }

@@ -13,30 +13,21 @@ public class FileUtilImpl {
 
     /// Creates the file with destination folder
     //org File
-    public String getOutputMediaFile(int type) {
+
+    private String path;
+
+    public String getFIlePath() {
+        return path;
+    }
 
 
-        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), "MyCameraApp");
 
-
-        if(!mediaStorageDir.exists()) {
-
-            if(!mediaStorageDir.mkdirs()) {
-                Log.e("MainActivityCAMERA", "Failed to create Directory");
-                return null;
-            };
-        }
-
-        //Create media file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+    public File getOutputMediaFile(int type, String filePath) {
 
         File mediaFile;
 
-        mediaFile = new File(mediaStorageDir.getPath() + File.separator + "IMG_" + timeStamp + ".jpg");
+        mediaFile = new File(filePath);
 
-        return mediaStorageDir.getPath() + File.separator + "IMG_" + timeStamp + ".jpg";
-
-        //return mediaFile;
+        return mediaFile;
     }
 }
