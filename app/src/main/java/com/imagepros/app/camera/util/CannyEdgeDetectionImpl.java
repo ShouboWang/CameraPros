@@ -13,7 +13,7 @@ package com.imagepros.app.camera.util;
 
 import android.util.Log;
 
-import com.imagepros.app.camera.util.Filters.BoxBlur;
+//import com.imagepros.app.camera.util.Filters.BoxBlur;
 import com.imagepros.app.camera.util.Filters.GaussianFilterImpl;
 import com.imagepros.app.camera.util.Filters.HysteresisThresholdImpl;
 import com.imagepros.app.camera.util.Filters.NonMaxSuppressionImpl;
