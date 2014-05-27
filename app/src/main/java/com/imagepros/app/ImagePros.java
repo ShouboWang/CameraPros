@@ -8,12 +8,15 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.GridView;
+import android.content.res.Resources;
 
 import com.imagepros.app.camera.AndroidCannyEdgeDetector;
 import com.imagepros.app.camera.CustomCameraImpl;
@@ -21,9 +24,13 @@ import com.imagepros.app.camera.util.CannyEdgeDetectionImpl;
 import com.imagepros.app.display.CustomPreviewImpl;
 import com.imagepros.app.file.FilePathImpl;
 import com.imagepros.app.file.FileUtilImpl;
+import com.imagepros.app.display.adapter.GridViewImageAdapter;
+import com.imagepros.app.display.helper.AppConstant;
+import com.imagepros.app.display.helper.Utils;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 
 public class ImagePros extends Activity {
 
@@ -88,15 +95,44 @@ public class ImagePros extends Activity {
 
     }
 */
+
     private Camera mCamera;
     private CustomPreviewImpl mPreview;
     private final CustomCameraImpl mCustomCamera = new CustomCameraImpl();
     private AndroidCannyEdgeDetector androidCannyEdgeDetector;
 
     private  String path_;
+
+
+    private Utils utils;
+    private ArrayList<String> imagePaths = new ArrayList<String>();
+    private GridViewImageAdapter adapter;
+    private GridView gridView;
+    private int columnWidth;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_grid_view);
+
+        gridView = (GridView) findViewById(R.id.grid_view);
+        utils = new Utils(this);
+
+        // Initilizing Grid View
+        InitilizeGridLayout();
+
+        // loading all image paths from SD card
+        imagePaths = utils.getFilePaths();
+
+        // Gridview adapter
+        adapter = new GridViewImageAdapter(ImagePros.this, imagePaths,
+                columnWidth);
+
+        // setting grid view adapter
+        gridView.setAdapter(adapter);
+
+/*
+
         setContentView(R.layout.activity_image_pros3);
 
         // Create an instance of Camera
@@ -131,10 +167,27 @@ public class ImagePros extends Activity {
                         ImageView view2 = (ImageView)findViewById(R.id.camera_preview);
                         view2.setImageBitmap(image); //new img
                         */
-                    }
-                }
-        );
+       //             }
+       //         }
+       // );
     }
+
+    private void InitilizeGridLayout() {
+        Resources r = getResources();
+        float padding = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                AppConstant.GRID_PADDING, r.getDisplayMetrics());
+
+        columnWidth = (int) ((utils.getScreenWidth() - ((AppConstant.NUM_OF_COLUMNS + 1) * padding)) / AppConstant.NUM_OF_COLUMNS);
+
+        gridView.setNumColumns(AppConstant.NUM_OF_COLUMNS);
+        gridView.setColumnWidth(columnWidth);
+        gridView.setStretchMode(GridView.NO_STRETCH);
+        gridView.setPadding((int) padding, (int) padding, (int) padding,
+                (int) padding);
+        gridView.setHorizontalSpacing((int) padding);
+        gridView.setVerticalSpacing((int) padding);
+    }
+
 
     private Camera.PictureCallback mPicture = new Camera.PictureCallback() {
         @Override
