@@ -101,38 +101,36 @@ public class ImagePros extends Activity {
         //gridView = (GridView) findViewById(R.id.grid_view);
         utils = new Utils(this);
 
-        // Initilizing Grid View
-        //InitilizeGridLayout();
-
         // loading all image paths from SD card
         totalImagePaths = utils.getFilePaths();
         ///storage/emulated/0/Pictures/MyCameraApp2/IMG_20140520_023345.jpg
-        String date_header = "";
-        String[] temp = totalImagePaths.get(0).split("_");
-        date_header = temp[1];
+        //String date_header = "";
+        //String[] temp = totalImagePaths.get(0).split("_");
+        //date_header = temp[1];
         //System.out.println(date_header);
 
-        for (int i = 0; i < totalImagePaths.size(); i++){
+        //View v = vi.inflate(R.layout.activity_main_ayout,null);
 
-            if (totalImagePaths.get(i).split("_")[1].equals(date_header)){
-                imagePaths.add(totalImagePaths.get(i));
-            } else {
+        //for (int i = 0; i < totalImagePaths.size(); i++){
+
+          //  if (totalImagePaths.get(i).split("_")[1].equals(date_header)){
+          //      imagePaths.add(totalImagePaths.get(i));
+          //  } else {
                 //create the image view with imagePaths (same date)
 
+                //System.out.println(date_header);
                 LayoutInflater vi = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View v = vi.inflate(R.layout.activity_grid_view, null);
 
-
-                TextView section_header = (TextView) v.findViewById(R.id.date_bar);
-                section_header.setText(date_header);
+                //TextView section_header = (TextView) v.findViewById(R.id.date_bar);
+                //section_header.setText(date_header);
 
                 gridView = (GridView) v.findViewById(R.id.grid_view);
                 // Initilizing Grid View
                 InitilizeGridLayout();
 
                 // Gridview adapter
-                adapter = new GridViewImageAdapter(ImagePros.this, imagePaths,
-                        columnWidth);
+                adapter = new GridViewImageAdapter(ImagePros.this, totalImagePaths, columnWidth);
 
                 // setting grid view adapter
                 gridView.setAdapter(adapter);
@@ -141,15 +139,15 @@ public class ImagePros extends Activity {
 
                 View insertPoint = findViewById(R.id.insert_point);
                 ((ViewGroup) insertPoint).addView(v, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT));
-
                 //set the new date_header
-                date_header = totalImagePaths.get(i).split("_")[1];
+                //date_header = totalImagePaths.get(i).split("_")[1];
 
-                imagePaths.clear();
-                imagePaths.add(totalImagePaths.get(i));
-            }
+                //imagePaths.clear();
 
-        }
+                //imagePaths.add(totalImagePaths.get(i));
+           // }
+
+       // }
 
     }
 

@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:id="@+id/relatLayout">
 
-
+<!--
     <TextView
         android:id="@+id/date_bar"
         android:layout_width="match_parent"
@@ -14,6 +14,7 @@
         android:background="#A1AAAD">
 
         </TextView>
+        -->
     <GridView
         android:id="@+id/grid_view"
         android:layout_width="match_parent"
@@ -22,7 +23,7 @@
         android:gravity="center"
         android:stretchMode="columnWidth"
         android:background="#D0D8DB"
-        android:layout_below="@+id/date_bar" />
+        />
 
 
 
