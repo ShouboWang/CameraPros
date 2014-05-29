@@ -39,7 +39,7 @@ public class SobelOperatorImpl {
     //This Class will also calculate the Theta value for each pixel
     public void applySobelOperator( int[] srcImage, int srcImageWidth, int startIndex, int endIndex ) {
         int srcImageLength = srcImage.length;
-        int[] replicaArray = replicateArray(srcImage, startIndex, endIndex);
+        byte[] replicaArray = replicateArray(srcImage, startIndex, endIndex);
         atanArr = new char[endIndex - startIndex];
 
         //Apply the operator to every pixel
@@ -55,12 +55,13 @@ public class SobelOperatorImpl {
         }
     }
 
-    private int[] replicateArray( int[] srcImage, int startIndex, int endIndex )
+    private byte[] replicateArray( int[] srcImage, int startIndex, int endIndex )
     {
-        int[] replciaArray = new int[endIndex - startIndex];
+        //int[] replciaArray = new int[endIndex - startIndex];
+        byte[] replciaArray = new byte[endIndex - startIndex];
         for(int i = startIndex; i < endIndex; i++)
         {
-            replciaArray[i - startIndex] = srcImage[i];
+            replciaArray[i - startIndex] = (byte)srcImage[i];
         }
         return replciaArray;
     }
@@ -68,7 +69,7 @@ public class SobelOperatorImpl {
     // Sobel operator in the X and Y direction
     // Also populates the theta array by calculating the theta based on the gradient in the X and Y direction
     // Returns the combined X and Y value of the gradient
-    private int sobelOperator(int[] srcImage, int x, int srcImageWidth, int srcImageLength) {
+    private int sobelOperator(byte[] srcImage, int x, int srcImageWidth, int srcImageLength) {
         int retInt;
         int topRow = x - srcImageWidth;
         int botRow = x + srcImageWidth;

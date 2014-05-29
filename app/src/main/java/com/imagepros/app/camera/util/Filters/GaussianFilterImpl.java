@@ -34,11 +34,12 @@ public class GaussianFilterImpl {
         // get the gaussian kernel
         float[] kernel = get1DGaussianKernel( kernelSize, kernelDeviation );
 
-        int[] resultArr1 = new int[endIndex - startIndex];
+        //int[] resultArr1 = new int[endIndex - startIndex];
+        byte[] resultArr1 = new byte[endIndex - startIndex];
 
         // Process X direction
         for( int index = startIndex + kernel.length/2; index < endIndex - kernel.length/2; index++ ) {
-            resultArr1[index-startIndex] = processPointX(srcImgArr, index, kernel);
+            resultArr1[index-startIndex] = (byte)processPointX(srcImgArr, index, kernel);
         }
 
         // Process Y direction
@@ -102,7 +103,7 @@ public class GaussianFilterImpl {
     // Process the array in the Y direction
     // Gets the color value via byte shifting
     // Returns the processed int value
-    private int processPointY(int[] srcImg, int index, int width ,float[] kernel) {
+    private int processPointY(byte[] srcImg, int index, int width ,float[] kernel) {
         final int half = kernel.length / 2;
         final int srcImgLength = srcImg.length;
 

@@ -82,10 +82,10 @@ public class CannyEdgeDetectionImpl {
     private void filterSettingInit() {
         gaussianKernelSize_ = 5;
         gaussianKernelSigma_ = 3;
-        hypHighThreshold_ = 80;
-        hypLowThreshold_ = 30;
-        sobelHighThreshold_ = 30;
-        sobelLowThreshold_ = -30;
+        hypHighThreshold_ = 80; //80//30
+        hypLowThreshold_ = 30; //30//10
+        sobelHighThreshold_ = 30; //30//25
+        sobelLowThreshold_ = -30; //-30//25
     }
 
     // Applies canny edge detection to an image

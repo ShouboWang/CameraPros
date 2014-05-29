@@ -42,66 +42,6 @@ public class ImagePros extends Activity {
 
     private final String TAG = "CameraPros_ImagePros";
 
-    /*
-    private Camera mCamera;
-    private CustomPreviewImpl mCameraPreview;
-    private final CustomCameraImpl mCustomCamera = new CustomCameraImpl();
-
-    private AndroidCannyEdgeDetector androidCannyEdgeDetector;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-
-        Log.i(TAG, "Has started! ");
-
-        super.onCreate(savedInstanceState);
-
-
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-
-
-        setContentView(R.layout.activity_image_pros3);
-
-        mCamera = mCustomCamera.getCameraInstance();
-        mCameraPreview = new CustomPreviewImpl(this, mCamera);
-
-        FrameLayout preview = (FrameLayout)findViewById(R.id.camera_preview);
-
-        preview.addView(mCameraPreview);
-
-
-        Button captureButton = (Button)findViewById(R.id.button_capture);
-
-        captureButton.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-
-                        FilePathImpl fp = new FilePathImpl();
-                        String path = fp.getPath();
-
-                        Camera.PictureCallback p = mCustomCamera.getPictureCallback(path);
-                        mCamera.takePicture(null,null,p);
-
-                        BitmapFactory.Options options = new BitmapFactory.Options();
-                        options.inSampleSize = 1;  // >1 to return smaller image to save memory
-                        options.inScaled = false;
-
-
-                        Bitmap image = BitmapFactory.decodeFile(path, options);
-                        setContentView(R.layout.activity_image_pros2);
-                        ImageView view2 = (ImageView)findViewById(R.id.camera_preview);
-                        view2.setImageBitmap(image); //new img
-                    }
-                }
-        );
-
-    }
-*/
-
     private Camera mCamera;
     private CustomPreviewImpl mPreview;
     private final CustomCameraImpl mCustomCamera = new CustomCameraImpl();
@@ -152,17 +92,6 @@ public class ImagePros extends Activity {
                                 String path = fp.getPath();
                                 path_ = path;
                                 mCamera.takePicture(null, null, mPicture);
-                        /*
-                        BitmapFactory.Options options = new BitmapFactory.Options();
-                        options.inSampleSize = 1;  // >1 to return smaller image to save memory
-                        options.inScaled = false;
-
-
-                        Bitmap image = BitmapFactory.decodeFile(path, options);
-                        setContentView(R.layout.activity_image_pros2);
-                        ImageView view2 = (ImageView)findViewById(R.id.camera_preview);
-                        view2.setImageBitmap(image); //new img
-                        */
                              }
                         }
                 );
@@ -215,58 +144,13 @@ public class ImagePros extends Activity {
 
                 //set the new date_header
                 date_header = totalImagePaths.get(i).split("_")[1];
-                i--;
+
                 imagePaths.clear();
+                imagePaths.add(totalImagePaths.get(i));
             }
 
         }
 
-        // Gridview adapter
-        //adapter = new GridViewImageAdapter(ImagePros.this, imagePaths,
-        //        columnWidth);
-
-        // setting grid view adapter
-        //gridView.setAdapter(adapter);
-
-/*
-
-        setContentView(R.layout.activity_image_pros3);
-
-        // Create an instance of Camera
-        mCamera = mCustomCamera.getCameraInstance();
-
-        // Create our Preview view and set it as the content of our activity.
-        mPreview = new CustomPreviewImpl(this, mCamera);
-
-        //mPreview = new CustomPreviewImpl(this, mCamera);
-        FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
-        preview.addView(mPreview);
-
-        // Add a listener to the Capture button
-        Button captureButton = (Button) findViewById(R.id.button_capture);
-        captureButton.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // get an image from the camera
-                        FilePathImpl fp = new FilePathImpl();
-                        String path = fp.getPath();
-                        path_ = path;
-                        mCamera.takePicture(null, null, mPicture);
-                        /*
-                        BitmapFactory.Options options = new BitmapFactory.Options();
-                        options.inSampleSize = 1;  // >1 to return smaller image to save memory
-                        options.inScaled = false;
-
-
-                        Bitmap image = BitmapFactory.decodeFile(path, options);
-                        setContentView(R.layout.activity_image_pros2);
-                        ImageView view2 = (ImageView)findViewById(R.id.camera_preview);
-                        view2.setImageBitmap(image); //new img
-                        */
-       //             }
-       //         }
-       // );
     }
 
     private void InitilizeGridLayout() {
@@ -324,6 +208,21 @@ public class ImagePros extends Activity {
             setContentView(R.layout.activity_image_pros2);
             ImageView view2 = (ImageView)findViewById(R.id.camera_preview);
             view2.setImageBitmap(imageProcessed); //new img
+
+            File imageChange = new File(path_);
+            if(imageChange.exists()){
+                imageChange.delete();
+            }
+
+            FileOutputStream out;
+            try {
+                out = new FileOutputStream(path_);
+                imageProcessed.compress(Bitmap.CompressFormat.PNG, 100, out);
+                out.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
     };
 
