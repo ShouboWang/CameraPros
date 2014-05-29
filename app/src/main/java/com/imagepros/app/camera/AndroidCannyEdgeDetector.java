@@ -74,6 +74,9 @@ public class AndroidCannyEdgeDetector {
 
         //Thread single = new Thread(new CannyEdgeWorker(width, 0, intImageArray.length , intImageArray));
 
+
+
+
         int threadNum = 3;
         Thread[] threadArr = new Thread[threadNum];
 

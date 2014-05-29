@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:paddingBottom="5px"
+        android:background="@color/black"
+        android:id="@+id/header_content">
+
+        <Button
+            android:id="@+id/cameraButton"
+            android:layout_width="80dp"
+            android:layout_margin="5dp"
+            android:layout_height="80dp"
+            android:background="@drawable/camera"/>
+
+        <TextView
+            android:id="@+id/header1"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:text="Image Gallery"
+            android:textSize="30sp"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:typeface="serif"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_below="@id/header_content"
+        android:layout_height="fill_parent"
+        android:id="@+id/insert_point">
+    </LinearLayout>
+
+</RelativeLayout>
